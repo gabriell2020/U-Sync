@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Documentation</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #2c3e50;
+}
+
+.section {
+    margin: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-top: 40px;
+}
+
+pre {
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+/* Team Section */
+.team-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.team-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.team-member {
+    margin: 0 10px;
+}
+
+.team-member img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border: 3px solid #2c3e50; /* Primary color for image border */
+}
+
+.team-member p {
+    margin: 5px 0 0;
+    font-size: 0.85em; /* Smaller font size for member descriptions */
+}
+
+.team-member .name {
+    font-weight: bold;
+    color: #e74c3c; /* Secondary color for names */
+    font-size: 1em; /* Standard font size for names */
+}
+
+    </style>
+</head>
+<body>
+    <h1>U-Sync: Unifying  Event System</h1>
+    <div class="section">
+        <h2>Rationale</h2>
+        <p>
+            Educational Institutions and organizations has multiple departments under it, and social media has become its primary means of disseminating information. Each department has its own social media page, posting events and activities on their respective departments. This decentralized approach has led to fragmentation within the university or organization, resulting in less engagement with other departments on events. Additionally, the lack of a centralize calendar view exacerbates the issue, as social media platform lack structured information presentation, unfiltered content, and redundancy. Since there is no calendar view, participants may not prepare in advance due to not seeing the event weeks prior to the event. To address these challenges, we aim to design and develop U-Sync Unifying Events System to centralize event management with a calendar view of the events. 
+U-Sync centralize and manage events to mitigate challenges associated with fragmentation. A centralize platform provides stakeholders with a view for all events across departments. Through a unified calendar view, users can quickly browse upcoming events, eliminating the need to scan through social media feeds.
+
+U-Sync not only addresses the issue of fragmentation, it also promotes engagement and coordination among event management. By enabling admin to oversee the calendar and event manager or department heads to coordinate with the admin. It also provides advance notification of events to users, to have ample time to plan and prepare for events. With this structure of event information, it eliminates redundancy and ensures that users are presented  with relevant and timely updates. 
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Database Architecture</h2>
+        <img src="diagrams/deployment.jpg" alt="Deployment Diagram">
+    </div>
+
+    <div class="section">
+        <h2>Class Diagram</h2>
+        <img src="diagrams/Class.png" alt="Class Diagram">
+    </div>
+
+    <div class="section">
+        <h2>SQL Queries</h2>
+        <pre>
+            -- Create an event calendar for an organization
+            CREATE TABLE Event_Calendar (
+                calendar_id INT PRIMARY KEY AUTO_INCREMENT,
+                event_id INT,
+                user_id INT,
+                invite_status ENUM('pending', 'accepted', 'declined'),
+                FOREIGN KEY (event_id) REFERENCES tEvents(event_id),
+                FOREIGN KEY (user_id) REFERENCES Users(user_id)
+            );
+            
+            -- Users can join an event calendar via invite from an administrator or event manager
+            INSERT INTO Event_Calendar (event_id, user_id, invite_status)
+            VALUES (1, 2, 'pending');
+            
+            -- View upcoming events across all departments within the organization
+            SELECT * FROM tEvents WHERE event_DateTime > NOW();
+            
+            -- Access detailed information about each event by clicking on it within the calendar
+            SELECT * FROM tEvents WHERE event_id = 1;
+            
+            -- Filter the calendar by department, event type, or date range for a more focused view
+            
+            -- Filter by department
+            SELECT * FROM tEvents WHERE department_name = 'CAS';
+            
+            -- Filter by event type
+            SELECT * FROM tEvents WHERE event_Name LIKE '%Conference%';
+            
+            -- Filter by date range
+            SELECT * FROM tEvents WHERE event_DateTime BETWEEN '2024-06-01' AND '2024-06-30';
+            
+            -- Implement a notification system to send alerts and reminders about upcoming events
+            INSERT INTO Notifications (subject, message)
+            VALUES ('Event Reminder', 'Reminder: You have an event coming up.'); -- Example reminder
+            
+            -- Define Different User Roles within U-Sync
+            -- Administrators can manage all aspects of the system
+            
+            -- Example: Admin managing user accounts
+            UPDATE Users SET username = 'new_username' WHERE user_id = 1; -- Example update by Admin
+            
+            -- Example: Admin approving events
+            UPDATE Manage_Event_Requests SET status = 'accept' WHERE request_id = 1;
+            
+            -- Department managers can submit events for their department
+            INSERT INTO tEvents (event_Name, event_DateTime, department_name, description, location)
+            VALUES ('Department Meeting', '2024-06-10 10:00:00', 'COE', 'Monthly department meeting', 'Room 102'); -- Example by Department Manager
+            
+            -- Regular users can view the calendar and express interest in events
+            
+            -- Regular user viewing calendar
+            SELECT * FROM tEvents;
+            
+            -- Regular user expressing interest in an event
+            UPDATE Event_Calendar SET invite_status = 'accepted' WHERE calendar_id = 1 AND user_id = 2; -- Example user accepting invite
+            
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>DB-Fiddle Link</h2>
+        <p>
+            database link:
+            <a href="https://www.db-fiddle.com/f/ef7tgLu9tTwtYoiznWgruV/1" target="_blank">DB-Fiddle</a>
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Group Representatives</h2>
+        <div class="team-container">
+            <div class="team-member">
+                <img src="group_members\Dairo.jpg" alt="Dairo">
+                <p class="name">Joseph Bennet Dairo</p>
+                <p class="title">Project Manager</p>
+            </div>
+            <div class="team-row">
+                <div class="team-member">
+                    <img src="group_members\Queenie.jpg" alt="Queenie">
+                    <p class="name">Queenie Tabladillio</p>
+                    <p class="title">Designer/ Documentation</p>
+                </div>
+                <div class="team-member">
+                    <img src="group_members\Gab.jpg" alt="Alice Johnson">
+                    <p class="name">Gabriel Leornas</p>
+                    <p class="title">Programmer</p>
+                </div>
+                <div class="team-member">
+                    <img src="group_members\CJ2.jpg" alt="CJ2">
+                    <p class="name">Carlo J'aed Cahuya</p>
+                    <p class="title">Designer/Documentation</p>
+                </div>
+                <div class="team-member">
+                    <img src="group_members/ELmar.jpg" alt="ELmar">
+                    <p class="name">Elmar Augustine Fernandez</p>
+                    <p class="title">Analyst</p>
+                </div>                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
